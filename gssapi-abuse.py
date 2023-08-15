@@ -117,24 +117,38 @@ def enum(args : argparse.Namespace , log : logging.Logger):
             continue
 
         address = response[0].address
+        reverse = ''
         reverse_zone = dns.reversename.from_address(address)
-        found = False
+        reverse_match = True
+
+        try:
+            response = res.resolve_address(address)
+            reverse = response[0].target.to_text(True)
+        except (dns.resolver.NXDOMAIN, dns.resolver.NoAnswer, dns.resolver.NoNameservers):
+            log.debug("[!] IP %s for host %s does not have an PTR record, igorning" % (address, hostName))
+
+        if reverse != host:
+            reverse_match = False
+            found = False
+            for parent in range(0, 3):
+                try:  
+                    log.debug("[=] Attempting to resolve SOA for reverse zone %s" % reverse_zone.parent().to_text()) 
+                    utils.get_nameserver(reverse_zone.parent().to_text(), args.dc)
+                    found = True 
+                    break                 
+                except (dns.resolver.NXDOMAIN, dns.resolver.NoAnswer):   
+                    reverse_zone = reverse_zone.parent()            
+                    continue
         
-        for parent in range(0, 3):
-            try:  
-                log.debug("[=] Attempting to resolve SOA for reverse zone %s" % reverse_zone.parent().to_text()) 
-                utils.get_nameserver(reverse_zone.parent().to_text(), args.dc)
-                found = True                  
-            except (dns.resolver.NXDOMAIN, dns.resolver.NoAnswer):   
-                reverse_zone = reverse_zone.parent()            
-                continue            
-        
-        if not found:
-            log.info("[!] Igonring host %s because does not have a PTR record and the zone %s does not exist, we cant add new records :(" % (host, reverse_zone.parent().to_text()))
-            continue        
+            if not found:
+                log.info("[!] Ignoring host %s because does not have a PTR record and the zone %s does not exist, we cant add new records :(" % (host, reverse_zone.parent().to_text()))
+                continue 
 
         if gssapi_supported(host) == True:        
-            log.info("[+] Host %s has GSSAPI enabled over SSH" % host)
+            if reverse_match:
+                log.info("[+] Host %s has GSSAPI enabled over SSH" % host)
+            else:
+                log.info("[+] Host %s has GSSAPI enabled over SSH but the PTR record for IP address %s is incorrect.  Use dns mode to create a PTR record" % (host, address))
         else:
             log.info("[!] Host %s does not have GSSAPI enabled over SSH, ignoring" % host)
 
