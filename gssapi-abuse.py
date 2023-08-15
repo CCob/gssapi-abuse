@@ -6,6 +6,7 @@ import dns.name
 import dns.reversename
 import dns.message
 import dns.resolver
+import dns.exception
 import paramiko
 import socket
 import argparse
@@ -93,12 +94,16 @@ def enum(args : argparse.Namespace , log : logging.Logger):
     for host in results:
     
         log.debug("[=] Querying host %s for GSSAPI abuse potential" % host)
-
+      
         hostName = dns.name.from_text(host)
         domain = hostName.parent().to_text(True)
-                                        
+                       
         if(domain not in dns_cache.keys()):
-            dns_cache[domain] = utils.get_soa(domain, args.dc)
+            try:
+                dns_cache[domain] = utils.get_soa(domain, args.dc)
+            except dns.exception.Timeout:
+                log.info("[!] Host %s does not have a DNS records, ignoring" % host)
+                continue
 
         dns_server = dns_cache[domain]
 
