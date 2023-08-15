@@ -8,7 +8,23 @@ The second feature is the ability to perform dynamic DNS updates for GSSAPI abus
 
 ## Prerequisites 
 
-gssapi-abuse requires a working krb5 stack along with a correctly configured krb5.conf.  On Windows hosts, the MIT Kerberos software should be installed in addition to the python modules listed in `requirements.txt`, this can be obtained at the [MIT Kerberos Distribution Page](https://web.mit.edu/kerberos/dist/index.html).  Windows krb5.conf can be found at `C:\ProgramData\MIT\Kerberos5\krb5.conf`
+gssapi-abuse requires a working krb5 stack along with a correctly configured krb5.conf.  
+
+### Windows
+
+On Windows hosts, the MIT Kerberos software should be installed in addition to the python modules listed in `requirements.txt`, this can be obtained at the [MIT Kerberos Distribution Page](https://web.mit.edu/kerberos/dist/index.html).  Windows krb5.conf can be found at `C:\ProgramData\MIT\Kerberos5\krb5.conf`
+
+### Linux
+
+The `libkrb5-dev` package needs to be installed prior to installing python requirements
+
+### All
+
+Once the requirements are satisfied, you can install the python dependencies via pip/pip3 tool
+
+```
+pip install -r requirements.txt
+```
 
 ## Enumeration Mode
 
