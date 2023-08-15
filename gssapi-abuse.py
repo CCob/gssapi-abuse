@@ -136,7 +136,7 @@ def enum(args : argparse.Namespace , log : logging.Logger):
                     utils.get_nameserver(reverse_zone.parent().to_text(), args.dc)
                     found = True 
                     break                 
-                except (dns.resolver.NXDOMAIN, dns.resolver.NoAnswer):   
+                except (dns.resolver.NXDOMAIN, dns.resolver.NoAnswer, dns.exception.Timeout):   
                     reverse_zone = reverse_zone.parent()            
                     continue
         
