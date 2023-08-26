@@ -1,7 +1,7 @@
 # gssapi-abuse
 
 gssapi-abuse was released as part of my DEF CON 31 talk, A Broken Marriage: Abusing Mixed Vendor Kerberos stacks.  I full write up on the abuse vector can be found here 
-[https://www.pentestpartners.com/security-blog/a-broken-marriage-abusing-mixed-vendor-kerberos-stacks/](A Broken Marriage: Abusing Mixed Vendor Kerberos Stacks)
+[A Broken Marriage: Abusing Mixed Vendor Kerberos Stacks](https://www.pentestpartners.com/security-blog/a-broken-marriage-abusing-mixed-vendor-kerberos-stacks/)
 
 The tool has two features.  The first is the ability to enumerate non Windows hosts that are joined to Active Directory that offer GSSAPI authentication over SSH.
 
