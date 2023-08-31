@@ -16,7 +16,7 @@ class ComputerSearch:
         if self._ldapConnection.bind() == False:
             raise Exception("LDAP login failed")
             
-        self._base = server.info.naming_contexts[0]
+        self._base = server.info.naming_contexts[2]
         
      
     def find_linux_hosts(self):
